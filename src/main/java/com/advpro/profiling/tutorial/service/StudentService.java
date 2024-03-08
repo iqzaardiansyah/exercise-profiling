@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author muhammad.khadafi
@@ -24,19 +22,11 @@ public class StudentService {
     private StudentCourseRepository studentCourseRepository;
 
     public List<StudentCourse> getAllStudentsWithCourses() {
-        List<StudentCourse> studentCourses = studentRepository.findAll().stream()
-                .map(student -> studentCourseRepository.findByStudentId(student.getId()))
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-    
-        return studentCourses;
+        return studentCourseRepository.findAll();
     }
 
     public Student findStudentWithHighestGpa() {
-        List<Student> students = studentRepository.findAll();
-        Optional<Student> student = students.stream()
-                .max((s1, s2) -> Double.compare(s1.getGpa(), s2.getGpa()));
-        return student.orElse(null);
+        return studentRepository.findFirstByOrderByGpaDesc();
     }
 
     public String joinStudentNames() {
